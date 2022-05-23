@@ -40,7 +40,7 @@ class TimeToHuman
      * @param string $format
      * @return bool|string
      */
-    public static function MinsToHoursMins($time, $format = '%02d:%02d')
+    public static function minsToHoursMins($time, $format = '%02d:%02d')
     {
         if ($time < 1) {
             return false;
@@ -57,7 +57,8 @@ class TimeToHuman
      * @param bool $forceUnit
      * @return float|int|string
      */
-    public static function toHuman($seconds, $withUnits = true, $forceUnit = false) {
+    public static function toHuman($seconds, $withUnits = true, $forceUnit = false)
+    {
 
         $return = 0;
         $i = 0;
@@ -65,24 +66,24 @@ class TimeToHuman
         // Convert to logical units
         if (!$forceUnit) {
             foreach (self::$unitTime as $unit) {
-
                 $i++;
 
-                if ($seconds > $unit) continue;
+                if ($seconds > $unit) {
+                    continue;
+                }
                 $return = round($seconds, 2);
-                if ($withUnits)
+                if ($withUnits) {
                     $return = $return . ' ' . self::$units[$i];
+                }
             }
-
         } else {
-
             $unitTimeFraction = round($seconds / self::$unitTime[$forceUnit], 2);
 
             $return = $unitTimeFraction;
 
-            if ($withUnits)
+            if ($withUnits) {
                 $return = $unitTimeFraction . ' ' . $forceUnit;
-            
+            }
         }
 
         return $return;
@@ -103,18 +104,17 @@ class TimeToHuman
             $minutes = ($seconds % 60);
 
             return sprintf($format, $hours, $minutes);
-
         } elseif ($seconds >= 60) {
             $minutes = ($seconds % 60);
             return sprintf('%02d mins', $minutes);
-
         } else {
             $seconds = round($seconds, 2);
             return sprintf('%02d seconds', $seconds);
         }
     }
 
-    public static function suggestUnit($seconds) {
+    public static function suggestUnit($seconds)
+    {
 
         foreach (self::$units as $unit) {
             if ($seconds > self::$unitTime[$unit]) {
@@ -124,5 +124,4 @@ class TimeToHuman
             return $suggestedUnit;
         }
     }
-
 }

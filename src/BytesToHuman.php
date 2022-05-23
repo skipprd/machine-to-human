@@ -15,57 +15,40 @@ class BytesToHuman
     ];
 
     /**
-     * @param $bytes
+     * @param $size
      * @param bool $withUnits - append units (MB, GB, etc)
-     * @param bool $forceUnit - Enforce conversion to unit e.g 1024 bytes to 0.001 MB
+     * @param int $precision
      * @return string
      */
-    public static function toHuman($bytes, $withUnits = true, $forceUnit = false)
+    public static function toHuman($size, $withUnits, $precision = 2)
     {
-
-
-        // Convert to logical units
-        if (!$forceUnit) {
-
-            for ($i = 0; $bytes > 1024; $i++) {
-                $bytes /= 1024;
-            }
-
-        } else {
-
-            // Ensure conversion to unit 
-            foreach (self::$units as $i => $unit) {
-
-                if ($unit == $forceUnit) {
-                    $i--;
-                    break;
-                }
-
-
-                $bytes /= 1024;
-            }
+        static $units = array('B','KB','MB','GB','TB','PB','EB','ZB','YB');
+        $step = 1024;
+        $i = 0;
+        while (($size / $step) > 0.9) {
+            $size = $size / $step;
+            $i++;
         }
 
-
-        $return = round($bytes, 2);
-
-        if ($withUnits)
-            $return = $return . ' ' . self::$units[$i + 1];
-
-        return $return;
+        if ($withUnits) {
+            return round($size, $precision).$units[$i];
+        } else {
+            return round($size, $precision);
+        }
     }
+
 
     /**
      * @param $bytes
      * @return string
      */
-    public static function suggestUnit($bytes) {
+    public static function suggestUnit($bytes)
+    {
 
         $suggestedUnit = reset(self::$units);
 
         // Ensure conversion to unit
         foreach (self::$units as $i => $unit) {
-
             if ($bytes <= 1024) {
                 return $suggestedUnit;
             }
@@ -73,7 +56,6 @@ class BytesToHuman
             $suggestedUnit = self::$units[$i + 1];
 
             $bytes /= 1024;
-
         }
 
         return $suggestedUnit;
